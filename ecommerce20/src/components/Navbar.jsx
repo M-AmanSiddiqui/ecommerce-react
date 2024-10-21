@@ -21,16 +21,16 @@ const Navbar = () => {
             <li>
                 <Link to={'/signup'}>Signup</Link>
             </li>
-
             {/* User */}
             <li>
-                <Link to={'/'}>Kamal</Link>
+                <Link to={'/UserDashboard'}>Kamal</Link>
             </li>
 
-            {/* Admin */}
-            {/* <li>
-                <Link to={'/'}>Admin</Link>
-            </li> */}
+           {/* Admin */}
+           <li>
+                <Link to={'/AdminDashboard'}>Admin</Link> {/* Admin Dashboard */}
+            </li>
+
 
             {/* logout */}
             {/* <li>
