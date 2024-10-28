@@ -1,71 +1,101 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import SearchBar from "./SearchBar";
-
-
+import { useSelector } from "react-redux";
 
 const Navbar = () => {
+    // Safely get user from localStorage
+    const userData = localStorage.getItem('users');
+    let user = null;
+
+    try {
+        user = userData ? JSON.parse(userData) : null;
+    } catch (error) {
+        // console.error("Failed to parse user data:", error);
+    }
+
+    // Navigate 
+    const navigate = useNavigate();
+
+    // Logout function 
+    const logout = () => {
+        localStorage.removeItem('users');
+        navigate("/login");
+    };
+
+    // CartItems
+    const cartItems = useSelector((state) => state.cart);
+
     // navList Data
     const navList = (
-        <ul className="flex space-x-3 text-white font-medium text-md px-5 ">
+        <ul className="flex space-x-3 text-white font-medium text-md px-5">
             {/* Home */}
             <li>
-                <Link to={'/'}>Home</Link>
+                <Link to="/">Home</Link>
             </li>
-
-            {/* All Product */}
+            {/* All Products */}
             <li>
-                <Link to={'/allproduct'}>All Product</Link>
+                <Link to="/allproduct">All Product</Link>
             </li>
-
             {/* Signup */}
-            <li>
-                <Link to={'/signup'}>Signup</Link>
-            </li>
-            {/* User */}
-            <li>
-                <Link to={'/UserDashboard'}>Kamal</Link>
-            </li>
-
-           {/* Admin */}
-           <li>
-                <Link to={'/AdminDashboard'}>Admin</Link> {/* Admin Dashboard */}
-            </li>
-
-
-            {/* logout */}
-            {/* <li>
-                logout
-            </li> */}
-
+            {!user && (
+                <li>
+                    <Link to="/signup">Signup</Link>
+                </li>
+            )}
+            {/* Login */}
+            {!user && (
+                <li>
+                    <Link to="/login">Login</Link>
+                </li>
+            )}
+            {/* User Dashboard */}
+            {user?.role === "user" && (
+                <li>
+                    <Link to="/user-dashboard">User</Link>
+                </li>
+            )}
+            {/* Admin Dashboard */}
+            {user?.role === "admin" && (
+                <li>
+                    <Link to="/admin-dashboard">Admin</Link>
+                </li>
+            )}
+            {/* Logout */}
+            {user && (
+                <li className="cursor-pointer" onClick={logout}>
+                    Logout
+                </li>
+            )}
             {/* Cart */}
             <li>
-                <Link to={'/cart'}>
-                    Cart(0)
+                <Link to="/cart">
+                    Cart({cartItems.length})  {/* Show the number of items */}
                 </Link>
             </li>
         </ul>
-    )
+    );
+
     return (
         <nav className="bg-pink-600 sticky top-0">
-            {/* main  */}
-            <div className="lg:flex lg:justify-between items-center py-3 lg:px-3 ">
-                {/* left  */}
+            {/* Main */}
+            <div className="lg:flex lg:justify-between items-center py-3 lg:px-3">
+                {/* Left */}
                 <div className="left py-3 lg:py-0">
-                    <Link to={'/'}>
-                    <h2 className=" font-bold text-white text-2xl text-center">M.A Fashion</h2>
+                    <Link to="/">
+                        <h2 className="font-bold text-white text-2xl text-center">E-Bharat</h2>
                     </Link>
                 </div>
 
-                {/* right  */}
+                {/* Right */}
                 <div className="right flex justify-center mb-4 lg:mb-0">
                     {navList}
                 </div>
 
-                {/* Search Bar  */}
-              <SearchBar />
+                {/* Search Bar */}
+                <SearchBar />
             </div>
         </nav>
     );
-}
+};
 
 export default Navbar;
